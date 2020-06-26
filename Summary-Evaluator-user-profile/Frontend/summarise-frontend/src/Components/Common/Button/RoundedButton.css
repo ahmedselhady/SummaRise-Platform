@@ -1,0 +1,13 @@
+.rounded-button{
+
+    border-radius: 30%;
+    padding: 10%;
+    text-decoration: none;
+    font-size: 1em;
+    border-style: ridge;
+    border-width: 0.2em;
+}
+
+.rounded-button:focus{
+    border-color: orangered;
+}

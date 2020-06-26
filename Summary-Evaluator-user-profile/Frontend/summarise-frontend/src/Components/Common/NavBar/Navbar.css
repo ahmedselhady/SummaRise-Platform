@@ -1,0 +1,59 @@
+.toolbar {
+  width: 100%;
+  position: fixed;
+  background: whitesmoke;
+  height: 10%;
+  top: 0;
+  left: 0;
+}
+
+.toolbar-logo{
+  margin-left: 0.5rem;
+}
+
+.toggle-button-container{
+  height: 100%;
+  width: 7%;
+}
+
+.toolbar-logo a {
+  color: rgb(255, 136, 0);
+  text-decoration: none;
+  font-weight: bolder;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 1.5rem;
+}
+
+.toolbar-nav {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  padding: 0 1rem;
+}
+
+.toolbar-navigation-items a {
+  color: skyblue;
+  text-decoration: none;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.toolbar-navigation-items a:hover,
+.toolbar-navigation-items a:active {
+  color: orangered;
+  font-style: oblique;
+}
+
+.toolbar-navigation-items ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.toolbar-navigation-items li {
+    padding: 0 0.5rem ;
+}
+
+.toolbar-separator{
+    flex:1;
+}
