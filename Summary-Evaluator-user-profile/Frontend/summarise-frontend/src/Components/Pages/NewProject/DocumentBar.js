@@ -24,7 +24,7 @@ export default function DocumentBar(props) {
     return (
         <div className={classes.root}>
 
-            <Toolbar style={{ background: "#1c2e4a", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+            <Toolbar style={{ background: "#1c2e4a", display: "flex", flexDirection: "row", justifyContent: "space-between", paddingLeft: "0px" }}>
 
                 <Button
                     className={classes.button}
@@ -40,8 +40,8 @@ export default function DocumentBar(props) {
                     Upload document
       </Button>
 
-                <IconButton aria-label="delete" style={{ color: "white" }}>
-                    <DeleteOutlinedIcon />
+                <IconButton aria-label="delete" style={{ color: "white" }} >
+                    <DeleteOutlinedIcon onClick={props.setDocument("")}/>
                 </IconButton>
             </Toolbar>
 

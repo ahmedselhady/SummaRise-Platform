@@ -11,9 +11,11 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
-import GetAppIcon from '@material-ui/icons/GetApp'; 
-import LoopIcon from '@material-ui/icons/Loop'; 
-import BallotIcon from '@material-ui/icons/Ballot'; 
+import GetAppIcon from '@material-ui/icons/GetApp';
+import LoopIcon from '@material-ui/icons/Loop';
+import BallotIcon from '@material-ui/icons/Ballot';
+import TextField from '@material-ui/core/TextField';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 
 
 const drawerWidth = 240;
@@ -34,7 +36,7 @@ export default function SummaryBar(props) {
     return (
         <div className={classes.root}>
 
-            <Toolbar style={{ background: "#1c2e4a", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+            <Toolbar style={{ background: "#1c2e4a", display: "flex", flexDirection: "row", justifyContent: "space-between", paddingLeft: "0px" }}>
 
                 <div>
 
@@ -47,8 +49,8 @@ export default function SummaryBar(props) {
                             fontSize: "1.2em",
                             fontWeight: "bold"
                         }}
-                        size="small"
-                        onClick = {props.onGenerateSummary}
+                        size="Large"
+                        onClick={props.onGenerateSummary}
 
                     >
                         Generate Summary
@@ -64,21 +66,24 @@ export default function SummaryBar(props) {
                             fontWeight: "bold"
 
                         }}
-                        size="small"
-                        onClick = {props.onEvaluateSummary}
+                        size="Large"
+                        onClick={props.onEvaluateSummary}
                     >
                         Evaluate Summary
                     </Button>
                 </div>
 
-
-
+                <input style={{  width: "20%", paddingTop: "1%", paddingBottom: "1%" }} type="text" placeholder="Untitled Summary"  />
                 <div>
                     <IconButton aria-label="delete" style={{ color: "white" }}>
                         <SaveIcon />
                     </IconButton>
                     <IconButton aria-label="delete" style={{ color: "white" }}>
                         <GetAppIcon />
+                    </IconButton>
+
+                    <IconButton aria-label="delete" style={{ color: "white" }} >
+                        <DeleteOutlinedIcon onClick={props.setSummary("")} />
                     </IconButton>
                 </div>
 

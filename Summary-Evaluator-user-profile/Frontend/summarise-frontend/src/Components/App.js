@@ -5,7 +5,7 @@ import ProfileView from "./Pages/UserProfile/ProfileView";
 import NewUser from "./Pages/UserProfile/NewProfile";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import EditUser from "./Pages/UserProfile/EditProfile";
-import ApplicationDrawer from './ApplicationDrawer/AppDrawer';
+import ApplicationDrawer from './Pages/ApplicationDrawer/AppDrawer';
 import NewProject from './Pages/NewProject/NewProject';
 import ProjectsList from './Pages/ProjectsList/ProjectsList';
 

@@ -7,9 +7,7 @@ import { Link } from "react-router-dom";
 import Grid from '@material-ui/core/Grid';
 import "./Main.css";
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import IconButton from '@material-ui/core/IconButton';
 import AcUnitIcon from '@material-ui/icons/AcUnit';
 import Button from '@material-ui/core/Button';
 
@@ -67,9 +65,9 @@ export default MainPage;
 
 const QuickAccessCardStyles = makeStyles({
   root: {
-    width: "40%",
+    width: "30%",
     position: "absolute",
-    right: "30%",
+    right: "35%",
     bottom: "2%",
     opacity: "0.8",
     background: "#1c2e4C"
@@ -102,31 +100,28 @@ function QuickAccessCard() {
         <div
           style={{ display: "flex", flexDirection: "row", marginTop: "4%" }}
         >
-          <Divider style={{ background: "white", width: "45%", marginTop: "2%", marginRight: "1%" }} />
-          <AcUnitIcon style={{color: "white"}}/>
+          <Divider style={{ background: "white", width: "47%", marginTop: "2%", marginRight: "1%" }} />
+          <AcUnitIcon style={{ color: "white" }} />
 
-          <Divider style={{ background: "white", width: "45%", marginTop: "2%", marginLeft: "1%"  }} />
+          <Divider style={{ background: "white", width: "45%", marginTop: "2%", marginLeft: "1%" }} />
 
         </div>
 
-        <div style={{ justifyContent: "center", display: "flex", flexDirection: "row", marginTop: "5%" }}>
-          <Typography className={classes.title} variant="h4" gutterBottom>
-            Try it  {" "}
-            <Link to="/project/new" style={{ color: "white" }}>
-              Now
-          </Link>
-            <br />
+        <div 
+        style={{ 
+          //justifyContent: "center", display: "flex", flexDirection: "column",
+         marginTop: "5%" }}
+        >
 
-            or
-
-            <br />
-          Read more about {" "}
-
-            <Link to="/project/new" style={{ color: "white" }}>
-              SummaRise
+          <Link to="/project/new" style={{ textDecoration: "None", alignSelf: "center"}}>
+            <Button variant="outlined" style={{ color: "white", borderColor: "white", marginLeft: "40%", marginBottom: "2%" }}>Try it Now</Button>
           </Link>
 
-          </Typography>
+          <Typography className={classes.title} variant="h4" gutterBottom> {"and"} </Typography>
+
+          <Link to="/help/get-started" style={{ textDecoration: "None" }}>
+            <Button variant="outlined" style={{ color: "white", borderColor: "white", marginLeft: "28%" }}>Read more about SummaRise</Button>
+          </Link>
         </div>
 
         <div style={{ justifyContent: "center", display: "flex", flexDirection: "row", marginTop: "5%" }}>

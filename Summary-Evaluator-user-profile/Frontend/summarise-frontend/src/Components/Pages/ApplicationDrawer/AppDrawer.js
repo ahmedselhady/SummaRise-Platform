@@ -15,8 +15,6 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import { Link } from "react-router-dom";
@@ -26,10 +24,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import LiveHelpIcon from '@material-ui/icons/LiveHelp';
 import HttpIcon from '@material-ui/icons/Http';
-
-
-
-import logo from '../../pen.svg';
+import logo from '../../../pen.svg';
 
 const drawerWidth = 240;
 
@@ -105,6 +100,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ApplicationDrawer(props) {
     const classes = useStyles();
     const theme = useTheme();
+
     const [open, setOpen] = React.useState(false);
 
     const handleDrawerOpen = () => {
@@ -151,8 +147,8 @@ export default function ApplicationDrawer(props) {
 
                                         <Link to="/" style={{ textDecoration: "None", color: "white" }}>
                                             <Typography variant="h4" style={{
-                                                paddingTop: "0.5%",
-                                                paddingLeft: "1%"
+                                                paddingTop: "1%",
+                                                paddingLeft: "5%"
                                             }}> SummaRise </Typography>
                                         </Link>
                                     </div>
