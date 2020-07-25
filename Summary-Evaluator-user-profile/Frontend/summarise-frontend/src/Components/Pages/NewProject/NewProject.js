@@ -9,7 +9,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Alert from '@material-ui/lab/Alert';
 
 import { BASE_URL, COHERENCE_URL, SIMILARITY_URL, READABILITY_URL, SUMMARY_URL } from '../../../Services/Common';
-import { POST } from '../../../Services/HttpHandlers';
+import { POST, POST_AUTH } from '../../../Services/HttpHandlers';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -35,21 +35,22 @@ export default function NewProject(props) {
 
     const [document, setDocument] = React.useState("");
     const [summary, setSummary] = React.useState("");
+    const [summaryName, setSummaryName] = React.useState("");
 
     const [documentAnalysis, setDocumentAnalysis] = React.useState({
-        numberOfWords: "?",
-        numberOfSentences: "?",
-        wordsPerSentences: "?",
-        daleChallScore: "?",
-        fleshReadingEase: "?"
+        average_sentence_length: "?",
+        average_word_length: "?",
+        sentencesNo: "?",
+        syllable_count: "?",
+        wordsNo: "?"
     });
 
     const [summaryAnalysis, setSummaryAnalysis] = React.useState({
-        numberOfWords: "?",
-        numberOfSentences: "?",
-        wordsPerSentences: "?",
-        daleChallScore: "?",
-        fleshReadingEase: "?"
+        average_sentence_length: "?",
+        average_word_length: "?",
+        sentencesNo: "?",
+        syllable_count: "?",
+        wordsNo: "?"
     });
 
     const [summaryCoherence, setSummaryCoherence] = React.useState(undefined);
@@ -58,6 +59,27 @@ export default function NewProject(props) {
 
     const [documentCoherence, setDocumentCoherence] = React.useState(undefined);
     const [documentReadability, setDocumentReadability] = React.useState(undefined);
+
+    const handleSaveProject = () => {
+
+        // event.preventDefault();
+
+        const summaryDataToBeSaved = {
+            "document": document,
+            "summary": summary,
+            "summary_coherence": summaryCoherence,
+            "summary_readability": summaryReadability,
+            "summary_Similarity": summarySimilarity,
+            "document_coherence": documentCoherence,
+            "document_readability": documentReadability,
+            "summary_analysis": summaryAnalysis,
+            "document_analysis": documentAnalysis
+        };
+
+        POST_AUTH(BASE_URL, 'project/' + summaryName, summaryDataToBeSaved, props.token)
+            .then(response => (!response.ok ? undefined : response.JSON()))
+    }
+
 
     React.useEffect(
         () => () => {
@@ -68,7 +90,6 @@ export default function NewProject(props) {
 
     const getAlertTypeCoherence = (value) => {
 
-        console.log('similarity: ', value);
 
         if (value) {
 
@@ -176,7 +197,7 @@ export default function NewProject(props) {
                 text: document
             }).then(response => (!response.ok ? undefined : response.text()))
                 .then(coherecne_score => {
-                    setDocumentCoherence(parseFloat(coherecne_score).toFixed(2));
+                    setDocumentCoherence(parseFloat(coherecne_score).toFixed(1));
                 }).catch(error => {
                     console.log('error: ', error, 'occurred in on processing "Coherence Computation for Evaluated Summary"')
                 });
@@ -196,11 +217,11 @@ export default function NewProject(props) {
                 .then(response => (!response ? undefined : JSON.parse(response)))
                 .then(data => {
                     setDocumentAnalysis({
-                        numberOfWords: data.wordsNo,
-                        numberOfSentences: data.sentencesNo,
-                        wordsPerSentences: data.average_sentence_length,
-                        daleChallScore: data.dale_chall,
-                        fleshReadingEase: data.flesh_score
+                        average_sentence_length: data.average_sentence_length.toFixed(1),
+                        average_word_length: data.average_word_length.toFixed(1),
+                        sentencesNo: data.sentencesNo,
+                        syllable_count: data.syllable_count,
+                        wordsNo: data.wordsNo
                     })
                 }).catch(error => {
                     console.log('error: ', error, 'occurred in on processing "Document Analysis" @Evaluation')
@@ -216,6 +237,7 @@ export default function NewProject(props) {
                     if (parsedSummary) {
 
                         setSummary(parsedSummary.Summary);
+                        console.log("summary: ", summary);
 
                         POST(READABILITY_URL, 'text_analysis', {
                             text: parsedSummary.Summary
@@ -223,11 +245,11 @@ export default function NewProject(props) {
                             .then(response => (!response ? undefined : JSON.parse(response)))
                             .then(data => {
                                 setSummaryAnalysis({
-                                    numberOfWords: data.wordsNo,
-                                    numberOfSentences: data.sentencesNo,
-                                    wordsPerSentences: data.average_sentence_length,
-                                    daleChallScore: data.dale_chall,
-                                    fleshReadingEase: data.flesh_score
+                                    average_sentence_length: data.average_sentence_length.toFixed(1),
+                                    average_word_length: data.average_word_length.toFixed(1),
+                                    sentencesNo: data.sentencesNo,
+                                    syllable_count: data.syllable_count,
+                                    wordsNo: data.wordsNo
                                 })
                             }).catch(error => {
                                 console.log('error: ', error, 'occurred in on processing "Summary Analysis for Generated Summary"')
@@ -237,7 +259,7 @@ export default function NewProject(props) {
                             text: parsedSummary.Summary
                         }).then(response => (!response.ok ? undefined : response.text()))
                             .then(coherecne_score => {
-                                setSummaryCoherence(parseFloat(coherecne_score).toFixed(2));
+                                setSummaryCoherence(parseFloat(coherecne_score).toFixed(1));
                             }).catch(error => {
                                 console.log('error: ', error, 'occurred in on processing "Coherence Computation for Generated Summary"')
                             });
@@ -252,7 +274,7 @@ export default function NewProject(props) {
                             });
 
                         POST(SIMILARITY_URL, 'similarity', {
-                            article: props.document,
+                            article: document,
                             summary: parsedSummary.Summary
                         }).then(response => (!response.ok ? undefined : response.text()))
                             .then(similarity_score =>
@@ -285,7 +307,7 @@ export default function NewProject(props) {
                 text: document
             }).then(response => (!response.ok ? undefined : response.text()))
                 .then(coherecne_score => {
-                    setDocumentCoherence(parseFloat(coherecne_score).toFixed(2));
+                    setDocumentCoherence(parseFloat(coherecne_score).toFixed(1));
                 }).catch(error => {
                     console.log('error: ', error, 'occurred in on processing "Coherence Computation for Evaluated Summary"')
                 });
@@ -305,11 +327,11 @@ export default function NewProject(props) {
                 .then(response => (!response ? undefined : JSON.parse(response)))
                 .then(data => {
                     setDocumentAnalysis({
-                        numberOfWords: data.wordsNo,
-                        numberOfSentences: data.sentencesNo,
-                        wordsPerSentences: data.average_sentence_length,
-                        daleChallScore: data.dale_chall,
-                        fleshReadingEase: data.flesh_score
+                        average_sentence_length: data.average_sentence_length.toFixed(1),
+                        average_word_length: data.average_word_length.toFixed(1),
+                        sentencesNo: data.sentencesNo,
+                        syllable_count: data.syllable_count,
+                        wordsNo: data.wordsNo
                     })
                 }).catch(error => {
                     console.log('error: ', error, 'occurred in on processing "Document Analysis" @Evaluation')
@@ -321,11 +343,11 @@ export default function NewProject(props) {
                 .then(response => (!response ? undefined : JSON.parse(response)))
                 .then(data => {
                     setSummaryAnalysis({
-                        numberOfWords: data.wordsNo,
-                        numberOfSentences: data.sentencesNo,
-                        wordsPerSentences: data.average_sentence_length,
-                        daleChallScore: data.dale_chall,
-                        fleshReadingEase: data.flesh_score
+                        average_sentence_length: data.average_sentence_length.toFixed(1),
+                        average_word_length: data.average_word_length.toFixed(1),
+                        sentencesNo: data.sentencesNo,
+                        syllable_count: data.syllable_count,
+                        wordsNo: data.wordsNo
                     })
                 }).catch(error => {
                     console.log('error: ', error, 'occurred in on processing "Summary Analysis for Evaluated Summary"')
@@ -383,19 +405,19 @@ export default function NewProject(props) {
                             flexGrow: "1"
                         }}>
                             <Typography variant="h6" >
-                                {documentAnalysis.numberOfWords} {" words"} |
+                                {documentAnalysis.average_sentence_length} {" avg. sentence length"} |
                             </Typography>
                             <Typography variant="h6" >
-                                {documentAnalysis.numberOfSentences} {" sentences"} |
+                                {documentAnalysis.average_word_length} {" avg. words length"} |
                             </Typography>
                             <Typography variant="h6" >
-                                {documentAnalysis.wordsPerSentences} {" words per sentences"} |
+                                {documentAnalysis.syllable_count}  {" syllables"} |
                             </Typography>
                             <Typography variant="h6" >
-                                {documentAnalysis.daleChallScore}  {" dale-chall score"} |
+                                {documentAnalysis.sentencesNo} {" sentences"} |
                             </Typography>
                             <Typography variant="h6" >
-                                {documentAnalysis.fleshReadingEase}   {" flesh reading ease"}
+                                {documentAnalysis.wordsNo}   {" words"}
                             </Typography>
                         </div>
 
@@ -423,7 +445,13 @@ export default function NewProject(props) {
 
                 <Grid item xs={12} sm={6}>
                     <Paper className={classes.paper}>
-                        <SummaryBar onGenerateSummary={handleGrenrateSummary} onEvaluateSummary={handleEvaluateSummary} setSummary={setSummary} />
+                        <SummaryBar
+                            onGenerateSummary={handleGrenrateSummary}
+                            onEvaluateSummary={handleEvaluateSummary}
+                            // setSummary={setSummary}
+                            setSummaryName={setSummaryName}
+                            token={props.token}
+                            saveProject={handleSaveProject} />
                         <div style={{
                             display: "flex",
                             flexDirection: "row",
@@ -431,29 +459,28 @@ export default function NewProject(props) {
                             flexGrow: "1"
                         }}>
                             <Typography variant="h6" >
-                                {summaryAnalysis.numberOfWords} {" words"} |
+                                {summaryAnalysis.average_sentence_length} {" avg. sentence length"} |
                             </Typography>
                             <Typography variant="h6" >
-                                {summaryAnalysis.numberOfSentences} {" sentences"} |
+                                {summaryAnalysis.average_word_length} {" avg. words length"} |
                             </Typography>
                             <Typography variant="h6" >
-                                {summaryAnalysis.wordsPerSentences} {" words per sentences"} |
+                                {summaryAnalysis.syllable_count}  {" syllables"} |
                             </Typography>
                             <Typography variant="h6" >
-                                {summaryAnalysis.daleChallScore}  {" dale-chall score"} |
+                                {summaryAnalysis.sentencesNo} {" sentences"} |
                             </Typography>
                             <Typography variant="h6" >
-                                {summaryAnalysis.fleshReadingEase}   {" flesh reading ease"}
+                                {summaryAnalysis.wordsNo}   {" words"}
                             </Typography>
                         </div>
 
-                        <textarea  style={{ width: "98%", minHeight: "70vh", margin: "1%" }}
+                        <textarea style={{ width: "98%", minHeight: "70vh", margin: "1%" }}
 
-                            
                             onChange={(event) => {
-                                event.preventDefault();   
                                 setSummary(event.target.value);
                             }}
+                            value={summary}
                         />
 
                         <div style={{

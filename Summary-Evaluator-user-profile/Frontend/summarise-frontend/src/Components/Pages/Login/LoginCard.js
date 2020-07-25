@@ -6,17 +6,18 @@ import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Typography from '@material-ui/core/Typography';
 import { red } from '@material-ui/core/colors';
+import logo from '../../../pen1.png';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Link, Redirect } from "react-router-dom";
 import { BASE_URL } from '../../../Services/Common';
-import { POST } from '../../../Services/HttpHandlers';
+import { POST, GET } from '../../../Services/HttpHandlers';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     margin: "auto",
     // marginTop: "5%",
-    maxWidth: 700,
+    maxWidth: 500,
   },
   media: {
     height: "50%",
@@ -40,68 +41,78 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function LoginCard() {
+export default function LoginCard(props) {
   const classes = useStyles();
-
   const [expanded, setExpanded] = React.useState(false);
   const [userEmail, setUserEmail] = React.useState(undefined);
   const [userPass, setUserPass] = React.useState(undefined);
-  const [userUName, setUName] = React.useState(undefined);
-  const [userFName, setFName] = React.useState(undefined);
-  const [userLName, setLName] = React.useState(undefined);
-  const [userAffilitation, setAffiliation] = React.useState(undefined);
-  const [userOrg, setOrg] = React.useState(undefined);
   const [redirect, setRedirect] = React.useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
-  const handleSubmit = (event) => {
-
-    event.preventDefault();
-
-    const userData = {
-      "email": userEmail,
-      "password": userPass,
-      "user_name": userUName,
-      "first_name": userFName,
-      "last_name": userLName,
-      "affiliation": userAffilitation,
-      "institute": userOrg
-    }
-
-    POST(BASE_URL, 'register', userData)
-      .then(response => (!response.ok ? undefined : response.json()))
-      .then(response_message => {
-        const message = response_message.message;
-        if (message.includes('successfully')) {
-          console.log('elhamdulelah');
-          setRedirect(true);
-        } else {
-          alert(message);
-        }
-      }
-      ).catch(error => alert('Could Not Register! Please Check Your Internet Connection and Try Again'));
+  const getUserProjects = () => {
 
   }
 
   const renderRedirect = () => {
     if (redirect) {
-      return <Redirect to='/user/login' />
+      return <Redirect to='/' />
     }
   }
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
+    const userData = {
+      "email": userEmail,
+      "password": userPass
+    }
+
+    POST(BASE_URL, 'sign_in', userData)
+      .then(response => (!response.ok ? undefined : response.json()))
+      .then(response_message => {
+        const message = response_message.message;
+        if (message == undefined) {
+          console.log('elhamdulelah: ', response_message.token);
+          // TODO: Load his projects
+          setRedirect(true);
+          return response_message.token;
+        } else {
+          alert(message);
+          return undefined;
+        }
+      }
+      ).then(token => {
+        if (token) {
+          props.setToken(token);
+          console.log('done')
+          return token;
+        }
+
+        return undefined;
+
+      }).then((token) => {
+        if (token) {
+          GET(BASE_URL, 'user', token)
+            .then(response => (!response.ok ? undefined : response.json()))
+            .then(response => props.setUserData(response));
+
+        }
+      }).catch(error => alert('Could Not Register! Please Check Your Internet Connection and Try Again'));
+
+
+  }
 
   return (
-
     <form onSubmit={handleSubmit}>
 
       {renderRedirect()}
+
       <Card className={classes.root}>
         <CardHeader
-          title="Register"
+          title="Login"
           style={{
             textAlign: "center",
             color: "#23395d"
@@ -111,25 +122,33 @@ export default function LoginCard() {
 
           <div style={{
             display: "flex",
+            flexDirection: "row",
+            justifyContent: "center"
+          }}>
+            <img src={logo} alt="logo" className={classes.media} />
+
+          </div>
+
+
+          <div style={{
+            display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            marginTop: "1%"
+            marginTop: "5%"
           }}>
-
 
             <TextField
               required
-              id="user_mail"
+              id="filled-required"
               label="User Email"
               placeholder="someone@example.org"
               variant="filled"
               onChange={event => setUserEmail(event.target.value)}
             />
 
-
             <TextField
               style={{
-                marginTop: "3%"
+                marginTop: "5%"
               }}
               required
               id="filled-required"
@@ -138,66 +157,7 @@ export default function LoginCard() {
               label="Password"
               variant="filled"
               onChange={event => setUserPass(event.target.value)}
-            />
 
-            <TextField
-              style={{
-                marginTop: "3%"
-              }}
-              required
-              id="filled-required"
-              label="User Name"
-              placeholder="SelenaHarper97"
-              variant="filled"
-              onChange={event => setUName(event.target.value)}
-
-            />
-
-            <TextField
-              style={{
-                marginTop: "3%"
-              }}
-              required
-              id="filled-required"
-              label="First Name"
-              placeholder="Selena"
-              variant="filled"
-              onChange={event => setFName(event.target.value)}
-            />
-
-            <TextField
-              style={{
-                marginTop: "3%"
-              }}
-              id="filled-required"
-              label="Last Name"
-              placeholder="Harper"
-              variant="filled"
-              onChange={event => setLName(event.target.value)}
-            />
-
-            <TextField
-              style={{
-                marginTop: "3%"
-              }}
-              required
-              id="filled-required"
-              label="Current Affiliation"
-              placeholder="Software Developer"
-              variant="filled"
-              onChange={event => setAffiliation(event.target.value)}
-            />
-
-            <TextField
-              style={{
-                marginTop: "3%"
-              }}
-              required
-              id="filled-required"
-              label="Organization"
-              placeholder="Google"
-              variant="filled"
-              onChange={event => setOrg(event.target.value)}
             />
           </div>
 
@@ -213,14 +173,15 @@ export default function LoginCard() {
           <Button variant="contained" style={{
             width: "90%",
             padding: "2%",
+            // backgroung: 
             background: "#23395d",
             color: "white"
+
           }}
             type="submit"
 
-            onSubmit={handleSubmit}
           >
-            Register Now
+            Login
         </Button>
 
           <Typography paragraph
@@ -228,16 +189,16 @@ export default function LoginCard() {
               marginTop: "2%",
               paddingTop: "2px"
             }}>
-            Already a user?
+            Not Registered Yet?
 
 
-            <Link to="/user/login" style={{
+            <Link to="/user/new" style={{
               textDecoration: "None",
               paddingLeft: "5px",
               color: "orangered",
               fontWeight: "bold"
             }}>
-              Login
+              Create New Account
               </Link>
           </Typography>
 

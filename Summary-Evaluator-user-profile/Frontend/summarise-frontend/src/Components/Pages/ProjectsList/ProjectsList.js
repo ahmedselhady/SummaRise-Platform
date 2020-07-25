@@ -10,34 +10,34 @@ import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import EditIcon from '@material-ui/icons/Edit';
 import Divider from '@material-ui/core/Divider';
 import { Link } from "react-router-dom";
+import placeholder from "../../../empty-placeholder.jpeg";
 
 
+const dummy_projects_list = //[];
+    [
 
-const dummy_projects_list = [
+        {
+            project_name: "project summary 1",
+            project_date: "02/05/2020"
+        },
+        {
+            project_name: "project summary 2",
+            project_date: "02/05/2019"
+        },
+        {
+            project_name: "project summary 3",
+            project_date: "02/05/2018"
+        },
+        {
+            project_name: "project summary 4",
+            project_date: "24/05/2020"
+        },
 
-    {
-        project_name: "project summary 1",
-        project_date: "02/05/2020"
-    },
-    {
-        project_name: "project summary 2",
-        project_date: "02/05/2019"
-    },
-    {
-        project_name: "project summary 3",
-        project_date: "02/05/2018"
-    },
-    {
-        project_name: "project summary 4",
-        project_date: "24/05/2020"
-    },
-
-]
+    ]
 
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
-        marginTop: "2%"
     },
     paper: {
         padding: theme.spacing(2),
@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function ProjectsList() {
+export default function ProjectsList(props) {
     const classes = useStyles();
 
     return (
@@ -78,28 +78,34 @@ export default function ProjectsList() {
                     <Paper className={classes.paper}>
 
 
-                        {dummy_projects_list.map((value, idx) => (
-                            idx == dummy_projects_list.length - 1 ? (
-                                <ProjectListItem
-                                    key={idx}
-                                    project_name={value.project_name}
-                                    project_date={value.project_date}
-                                />
-                            ) : (
-                                    <div
-                                        key={idx}
-                                    >
+                        {
+                            props.userData != undefined ?
+                            props.userData.projects_exist == 0 ?
 
-                                        <ProjectListItem
-                                            project_name={value.project_name}
-                                            project_date={value.project_date}
-                                        />
-                                        <Divider />
-                                    </div>
+                                    (<img src={placeholder} alt="empty-placeholder" />
+                                    )
+                                    : (dummy_projects_list.map((value, idx) => (
+                                        idx == dummy_projects_list.length - 1 ? (
+                                            <ProjectListItem
+                                                key={idx}
+                                                project_name={value.project_name}
+                                                project_date={value.project_date}
+                                            />
+                                        ) : (
+                                                <div
+                                                    key={idx}
+                                                >
 
-                                )
-                        ))
-                        }
+                                                    <ProjectListItem
+                                                        project_name={value.project_name}
+                                                        project_date={value.project_date}
+                                                    />
+                                                    <Divider />
+                                                </div>
+
+                                            )
+                                    ))
+                                    ) : null}
                     </Paper>
 
                 </Grid>

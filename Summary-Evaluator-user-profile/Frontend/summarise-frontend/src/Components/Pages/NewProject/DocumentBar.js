@@ -41,7 +41,11 @@ export default function DocumentBar(props) {
       </Button>
 
                 <IconButton aria-label="delete" style={{ color: "white" }} >
-                    <DeleteOutlinedIcon onClick={props.setDocument("")}/>
+                    <DeleteOutlinedIcon onClick={(event) => {
+                        event.preventDefault();
+                        props.setDocument("");
+                        React.find = "";
+                    }} />
                 </IconButton>
             </Toolbar>
 

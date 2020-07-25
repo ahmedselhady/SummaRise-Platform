@@ -73,22 +73,33 @@ export default function SummaryBar(props) {
                     </Button>
                 </div>
 
-                <input style={{  width: "20%", paddingTop: "1%", paddingBottom: "1%" }} type="text" placeholder="Untitled Summary"  />
+                <input
+                    style={{ width: "20%", paddingTop: "1%", paddingBottom: "1%" }}
+                    type="text"
+                    placeholder="Untitled Summary"
+                    onChange={(event) => props.setSummaryName(event.target.value)}
+                />
                 <div>
-                    <IconButton aria-label="delete" style={{ color: "white" }}>
-                        <SaveIcon />
-                    </IconButton>
+
+                    {props.token ?
+                        <IconButton aria-label="delete" style={{ color: "white" }}
+
+                            onClick={() => { props.saveProject() }}
+                        >
+                            <SaveIcon />
+                        </IconButton> : null
+                    }
                     <IconButton aria-label="delete" style={{ color: "white" }}>
                         <GetAppIcon />
                     </IconButton>
 
                     <IconButton aria-label="delete" style={{ color: "white" }} >
-                        <DeleteOutlinedIcon onClick={props.setSummary("")} />
+                        <DeleteOutlinedIcon  />
                     </IconButton>
                 </div>
 
             </Toolbar>
 
-        </div>
+        </div >
     );
 }

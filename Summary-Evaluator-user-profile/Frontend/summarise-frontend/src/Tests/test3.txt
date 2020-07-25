@@ -1,0 +1,6 @@
+<Def>High Coherence and Elementry Readability text gives High Coherence and Elementry Level Readability</Def>
+
+
+<Text>
+ROME (Reuters) - Italian Economy Minister Roberto Gualtieri said on Monday the government is closely watching the merger between the London Stock Exchange (LSE) and Refinitiv, and its implications for the Italian bourse owned by LSE. “It is clear that we consider our bourse a strategic asset with great potential and so we are following this dossier with attention,” Gualtieri told reporters. The Italian stock exchange includes MTS, the key trading platform for Italian sovereign bonds which is of crucial importance to Rome as it grapples with a surging public debt. Prime Minister Giuseppe Conte, speaking at the same news conference, said Italy currently has no need of a loan from the euro zone bailout fund, known as the European Stability Mechanism.
+</Text>

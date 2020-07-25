@@ -1,212 +1,265 @@
-import React from "react";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import ButtonBase from "@material-ui/core/ButtonBase";
-import EditIcon from "@material-ui/icons/Edit";
-import FloatingActionButton from "../../Common/Button/FloatingButton";
-import { makeStyles } from "@material-ui/core/styles";
-import LetterAvatars from "../../Common/UserAvatar/Avatar";
-import ExpansionPanelHolder from "../../Common/ExpansionPannel/ExpansionPannel";
-import ProjectSummary from "../ProjectSummary/ProjectSummar";
-import TextField from "@material-ui/core/TextField";
-import CategorizedSelect from "../../Common/Dropdown/CategorizedSelectMenu";
-import IconedButton from "../../Common/Button/Button";
-import Divider from "@material-ui/core/Divider";
-import CheckIcon from "@material-ui/icons/Check";
-import CloseIcon from "@material-ui/icons/Close";
-import IconButton from "@material-ui/core/IconButton";
-import TooltipButton from "../../Common/Button/Tooltip";
-import ProgressSaveButton from '../../Common/Button/SaveButton';
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import Typography from '@material-ui/core/Typography';
+import { red } from '@material-ui/core/colors';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import { Link, Redirect } from "react-router-dom";
+import Divider from '@material-ui/core/Divider';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1,
-    background: "#23395d",
-    height: "70%"
-  },
-  margin: {
-    margin: theme.spacing(1)
-  },
-  marginCorrect: {
-    margin: theme.spacing(1),
-    background: "orangered"
-  },
-
-  paper: {
-    marginTop: "8%",
     margin: "auto",
-    maxWidth: "40%",
-    height: "60%"
+    // marginTop: "1%",
+    maxWidth: 700,
   },
-  image: {
-    width: "100%",
-    height: "100%",
-    paddingRight: "70%"
+  media: {
+    height: "50%",
+    width: "50%",
+    padding: "2%",
+    borderRadius: "50%",
+    background: "#23395d"
   },
-  img: {
-    margin: "auto",
-    display: "block",
-    maxWidth: "100%",
-    maxHeight: "100%"
+  expand: {
+    transform: 'rotate(0deg)',
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
   },
-  formroot: {
-    "& .MuiTextField-root": {
-      margin: theme.spacing(1),
-      width: "90%"
-    }
+  expandOpen: {
+    transform: 'rotate(180deg)',
   },
-  formlabels: {
-    color: "#0076BD",
-    fontFamily: "sans-sarif",
-    fontSize: "1.2em"
+  avatar: {
+    backgroundColor: red[500],
   },
-  formInput: {
-    margin: "auto",
-    padding: "auto",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    width: "90%"
-  },
-  formInputButtons: {
-    display: "flex",
-    flexDirection: "row",
-    width: "90%",
-    padding: "auto",
-    margin: "auto"
-  }
 }));
 
-const dummyTitles = [
-  {
-    title: "summary 1"
-  },
-  {
-    title: "summary 2"
-  },
-  {
-    title: "summary 3"
+export default function EditUSer(props) {
+  const classes = useStyles();
+  const [expanded, setExpanded] = React.useState(false);
+
+  const [redirect, setRedirect] = React.useState(false);
+
+  const renderRedirect = () => {
+    if (redirect) {
+      return <Redirect to='/user/' />
+    }
   }
-];
 
-export default function EditUser(props) {
-  const classes = useStyles();
-
-  return (
-    <Paper className={classes.paper}>
-      <EditUserForm {...props} />
-    </Paper>
-  );
-}
-
-function EditUserForm(props) {
-  const classes = useStyles();
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
 
   return (
-    <form className={classes.formroot}>
-      <div
-        className={classes.formInput}
+    <Card className={classes.root}>
+      <CardHeader
+        title={props.userName}
+        subheader={props.userEmail}
         style={{
-          paddingBottom: "5%"
+          textAlign: "center",
+          color: "#23395d",
+          fontSize: "1.2em"
         }}
-      >
-        <div></div>
-        {/* <LetterAvatars initials="AS" variant="square"/> */}
-        <h
+      />
+      <CardContent>
+
+
+        <Typography variant="h5"
           style={{
-            fontFamily: "sans-serif",
-            fontSize: "5em",
-            //fontWeight: "bold",
-            flex: 1,
-            color: "skyblue",
-            alignText: "center",
-            margin: "auto"
-          }}
-        >
-          {props.userName}
-        </h>
+            marginTop: "2%",
+            paddingTop: "2px",
+            marginLeft: "5%"
+          }}>
+          Personal Data:
+          </Typography>
 
-        <h
-          style={{
-            fontFamily: "sans-serif",
-            fontSize: "1em",
-            //fontWeight: "bold",
-            flex: 1,
-            color: "skyblue",
-            alignText: "center",
-            margin: "auto"
-          }}
-        >
-          {props.userEmail}
-        </h>
-      </div>
 
-      <div
-        className={classes.formInput}
-        style={{
-          paddingBottom: "5%"
-        }}
-      >
-        <Divider light />
-      </div>
 
-      <div className={classes.formInput}>
-        <div>
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          marginTop: "1%",
+          marginLeft: "15%",
+          marginRight: "15%",
+          marginBottom: "5%"
+        }}>
+
           <TextField
+            style={{
+              marginTop: "3%"
+            }}
             required
-            id="outlined-basic"
+            id="filled-required"
             label="First Name"
-            variant="outlined"
-            placeholder="e.g. Paul"
+            placeholder="Selena"
+            variant="filled"
             defaultValue={props.firstName}
-          />
-        </div>
 
-        <div>
+          />
+
           <TextField
-            id="outlined-basic"
+            style={{
+              marginTop: "3%"
+            }}
+            id="filled-required"
             label="Last Name"
-            variant="outlined"
-            placeholder="e.g. Gregory"
+            placeholder="Harper"
+            variant="filled"
             defaultValue={props.lastName}
-          />
-        </div>
-      </div>
 
-      <div className={classes.formInput}>
-        <div>
+          />
+
           <TextField
+            style={{
+              marginTop: "3%"
+            }}
             required
-            id="outlined-basic"
+            id="filled-required"
             label="Current Affiliation"
-            variant="outlined"
-            placeholder="e.g. Senior Vice Presedent"
+            placeholder="Software Developer"
+            variant="filled"
             defaultValue={props.affiliation}
-          />
-        </div>
 
-        <div>
+          />
+
           <TextField
+            style={{
+              marginTop: "3%"
+            }}
             required
-            id="outlined-basic"
+            id="filled-required"
             label="Organization"
-            variant="outlined"
-            placeholder="e.g. Google"
+            placeholder="Google"
+            variant="filled"
             defaultValue={props.institute}
           />
         </div>
-      </div>
-      <div className={classes.formInputButtons}>
-        <div />
-        <IconButton aria-label="discard" className={classes.margin}>
-          <CloseIcon />
-        </IconButton>
-        <ProgressSaveButton />
-        {/* <IconButton aria-label="save" className={classes.marginCorrect}>
-          <CheckIcon />
-        </IconButton> */}
-      </div>
-    </form>
+
+
+        <Divider />
+
+        <Typography variant="h5"
+          style={{
+            marginTop: "2%",
+            paddingTop: "2px",
+            marginLeft: "5%"
+          }}>
+          Change Password:
+          </Typography>
+
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          marginTop: "1%",
+          marginLeft: "15%",
+          marginRight: "15%",
+          marginBottom: "5%"
+        }}>
+
+          <TextField
+            style={{
+              marginTop: "3%"
+            }}
+            id="filled-required"
+            label="New Password"
+            variant="filled"
+            type="password"
+          />
+
+          <TextField
+            style={{
+              marginTop: "3%"
+            }}
+            id="filled-required"
+            label="Confirm New Password"
+            variant="filled"
+            type="password"
+          />
+
+        </div>
+
+
+
+        <Divider />
+
+
+        <Typography variant="h5"
+          style={{
+            marginTop: "2%",
+            paddingTop: "2px",
+            marginLeft: "5%"
+          }}>
+          Confirm You Password:
+          </Typography>
+
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          marginTop: "1%",
+          marginLeft: "15%",
+          marginRight: "15%",
+          marginBottom: "5%"
+        }}>
+          <TextField
+            style={{
+              marginTop: "3%"
+            }}
+            required
+            id="filled-required"
+            label="Current Password"
+            variant="filled"
+            type="password"
+          />
+
+        </div>
+
+
+
+      </CardContent>
+      <CardActions style={{
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
+        marginBottom: "5%",
+        marginLeft: "5%",
+        marginRight: "5%",
+
+
+      }} >
+
+        {renderRedirect()}
+        <Button variant="contained" style={{
+          width: "90%",
+          padding: "2%",
+          background: "#D3D3D3",
+          color: "#23395d"
+        }}
+        
+        onClick = {()=>{ setRedirect(true) }}
+        >
+         
+            Cancel
+          
+
+        </Button>
+
+        <Button variant="contained" style={{
+          width: "90%",
+          padding: "2%",
+          background: "#23395d",
+          color: "white"
+        }}>
+          Save
+        </Button>
+      </CardActions>
+    </Card>
   );
 }

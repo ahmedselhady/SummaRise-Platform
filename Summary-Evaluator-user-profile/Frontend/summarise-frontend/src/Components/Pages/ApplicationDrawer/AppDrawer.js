@@ -17,13 +17,15 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import LiveHelpIcon from '@material-ui/icons/LiveHelp';
 import HttpIcon from '@material-ui/icons/Http';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+
 import logo from '../../../pen.svg';
 
 const drawerWidth = 240;
@@ -102,18 +104,33 @@ export default function ApplicationDrawer(props) {
     const theme = useTheme();
 
     const [open, setOpen] = React.useState(false);
+    const [redirect, setRedirect] = React.useState(false);
 
     const handleDrawerOpen = () => {
         setOpen(true);
     };
 
+    const renderRedirect = () => {
+        if (redirect) {
+            return <Redirect to='/user/login' />
+        }
+    }
     const handleDrawerClose = () => {
         setOpen(false);
     };
 
+    const handleLogout = (event) => {
+        event.preventDefault();
+        props.setToken(undefined);
+
+        setRedirect(true);
+    }
+
     return (
         <div className={classes.root}>
             <CssBaseline />
+            {renderRedirect()}
+
             <AppBar
                 position="fixed"
                 className={clsx(classes.appBar, {
@@ -157,17 +174,28 @@ export default function ApplicationDrawer(props) {
                                 </Grid>
                                 <Grid item xs={3}>
                                 </Grid>
-                                <Grid item xs={3}>
+
+                                {props.token == undefined ?
+                                    <Grid item xs={3}>
+                                        <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", paddingTop: "0.5%" }}>
+                                            <Link to="/user/new" style={{ textDecoration: "None" }}>
+                                                <Button variant="outlined" style={{ color: "white", borderColor: "white" }}>Register</Button>
+                                            </Link>
+                                            <Link to="/user/login" style={{ textDecoration: "None" }}>
+                                                <Button variant="outlined" style={{ color: "white", borderColor: "white", marginLeft: "25%" }}>LogIn </Button>
+                                            </Link>
+                                        </div>
+
+                                    </Grid>
+                                    :
+                                    <Grid item xs={3}>
                                     <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", paddingTop: "0.5%" }}>
-                                        <Link to="/user/new" style={{ textDecoration: "None" }}>
-                                            <Button variant="outlined" style={{ color: "white", borderColor: "white" }}>Register</Button>
-                                        </Link>
-                                        <Link to="/user/login" style={{ textDecoration: "None" }}>
-                                            <Button variant="outlined" style={{ color: "white", borderColor: "white", marginLeft: "25%" }}>LogIn </Button>
-                                        </Link>
+                                            <Button variant="outlined" style={{ color: "#23395d", borderColor: "#23395d" }} disabled>Register</Button>
+                                            <Button variant="outlined" style={{ color: "#23395d", borderColor: "#23395d", marginLeft: "25%" }} disabled>LogIn </Button>
                                     </div>
 
                                 </Grid>
+                                }
                             </Grid>
                         </Grid>
                     </Grid>
@@ -197,12 +225,16 @@ export default function ApplicationDrawer(props) {
                         </ListItem>
                     </Link>
 
-                    <Link to="/project/all" style={{ textDecoration: "None", color: "#212121" }}>
-                        <ListItem button key={1}>
-                            <ListItemIcon> <FormatListNumberedIcon /></ListItemIcon>
-                            <ListItemText primary={"My Projects"} />
-                        </ListItem>
-                    </Link>
+                    {props.token != undefined ?
+
+                        <Link to="/project/all" style={{ textDecoration: "None", color: "#212121" }}>
+                            <ListItem button key={1}>
+                                <ListItemIcon> <FormatListNumberedIcon /></ListItemIcon>
+                                <ListItemText primary={"My Projects"} />
+                            </ListItem>
+                        </Link> : null}
+
+
 
                 </List>
 
@@ -232,14 +264,37 @@ export default function ApplicationDrawer(props) {
                 </List>
 
                 <Divider />
-                <List>
-                    <Link to="/user/new" style={{ textDecoration: "None", color: "#212121" }}>
-                        <ListItem button key={0}>
-                            <ListItemIcon> <ExitToAppIcon /></ListItemIcon>
-                            <ListItemText primary={"LogIn"} />
+
+                {props.token != undefined ?
+
+                    <Link to="/user/" style={{ textDecoration: "None", color: "#212121" }}>
+                        <ListItem button key={1}>
+                            <ListItemIcon> <AccountCircle /></ListItemIcon>
+                            <ListItemText primary={"My Profile"} />
                         </ListItem>
-                    </Link>
+                    </Link> : null}
+
+                <List>
+                    {props.token == undefined ?
+
+                        <Link to="/user/login" style={{ textDecoration: "None", color: "#212121" }}>
+                            <ListItem button key={0}>
+                                <ListItemIcon> <ExitToAppIcon /></ListItemIcon>
+                                <ListItemText primary={"Log-in"} />
+                            </ListItem>
+                        </Link> : null}
+
+                    {props.token != undefined ?
+
+                        <ListItem button key={0} >
+                            <ListItemIcon onClick={(e) => props.setToken(undefined)}> <ExitToAppIcon /></ListItemIcon>
+                            <ListItemText primary={"Log-out"} onClick={(e) => props.setToken(undefined)} />
+                        </ListItem>
+                        : null}
+
                 </List>
+
+
             </Drawer>
             <main
                 className={clsx(classes.content, {
