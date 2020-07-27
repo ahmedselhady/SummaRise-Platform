@@ -20,6 +20,28 @@ const useStyles = makeStyles((theme) => ({
 
 export default function DocumentBar(props) {
     const classes = useStyles();
+    const hiddenFileInput = React.useRef(null);
+
+    const handleChange = event => {
+
+        const reader = new FileReader()
+        reader.onload = async (event) => {
+            const text = (event.target.result)
+            console.log(text)
+            props.setDocument(text);
+        };
+        reader.readAsText(event.target.files[0])
+
+        // event.preventDefault()
+        // const fileUploaded = event.target.files[0];
+        // const fr = new FileReader();
+        // fr.onload = () => {
+        //     props.setDocument("did it work?");
+        //     console.log(fr.result);
+        // };
+
+        // fr.readAsText(fileUploaded);
+    };
 
     return (
         <div className={classes.root}>
@@ -36,14 +58,23 @@ export default function DocumentBar(props) {
                         fontWeight: "bold"
 
                     }}
-                    size="Large"                 >
+                    size="Large"
+
+                    onClick={() => hiddenFileInput.current.click()}
+                >
+                    <input
+                        type="file"
+                        ref={hiddenFileInput}
+                        onChange={handleChange}
+                        style={{ display: 'none' }}
+                    />
                     Upload document
       </Button>
 
                 <IconButton aria-label="delete" style={{ color: "white" }} >
                     <DeleteOutlinedIcon onClick={(event) => {
                         event.preventDefault();
-                        props.setDocument("");
+                        // props.setDocument("");
                         React.find = "";
                     }} />
                 </IconButton>

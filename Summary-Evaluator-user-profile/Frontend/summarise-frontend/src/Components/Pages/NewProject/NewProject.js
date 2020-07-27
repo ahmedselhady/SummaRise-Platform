@@ -24,6 +24,13 @@ const useStyles = makeStyles((theme) => ({
         bottom: "50px",
         right: "10px",
     },
+
+    progressBar: {
+        width: '100%',
+        '& > * + *': {
+            marginTop: theme.spacing(1),
+        }
+    }
 }));
 
 export default function NewProject(props) {
@@ -60,6 +67,8 @@ export default function NewProject(props) {
     const [documentCoherence, setDocumentCoherence] = React.useState(undefined);
     const [documentReadability, setDocumentReadability] = React.useState(undefined);
 
+    const [showProgress, setShowProgress] = React.useState(false);
+
     const handleSaveProject = () => {
 
         // event.preventDefault();
@@ -79,7 +88,6 @@ export default function NewProject(props) {
         POST_AUTH(BASE_URL, 'project/' + summaryName, summaryDataToBeSaved, props.token)
             .then(response => (!response.ok ? undefined : response.JSON()))
     }
-
 
     React.useEffect(
         () => () => {
@@ -167,7 +175,7 @@ export default function NewProject(props) {
         }
         return "?"
 
-    };
+    }
 
     const getCoherenceCategory = (value) => {
 
@@ -186,12 +194,43 @@ export default function NewProject(props) {
         }
         return "?"
 
-    };
+    }
+
+    const resetOutput = (deleteSummary) => {
+
+        setDocumentAnalysis({
+            average_sentence_length: "?",
+            average_word_length: "?",
+            sentencesNo: "?",
+            syllable_count: "?",
+            wordsNo: "?"
+        });
+
+        setSummaryAnalysis({
+            average_sentence_length: "?",
+            average_word_length: "?",
+            sentencesNo: "?",
+            syllable_count: "?",
+            wordsNo: "?"
+        });
+
+        if (deleteSummary) {
+            setSummary("");
+        }
+
+        setSummaryCoherence(undefined);
+        setSummaryReadability(undefined);
+        setSummarySimilarity(undefined);
+
+        setDocumentCoherence(undefined);
+        setDocumentReadability(undefined);
+    }
 
     const handleGrenrateSummary = () => {
 
         if (document) {
-
+            setShowProgress(true);
+            resetOutput(true);
 
             POST(COHERENCE_URL, 'coherence', {
                 text: document
@@ -235,6 +274,7 @@ export default function NewProject(props) {
                 .then(parsedSummary => {
 
                     if (parsedSummary) {
+
 
                         setSummary(parsedSummary.Summary);
                         console.log("summary: ", summary);
@@ -286,8 +326,12 @@ export default function NewProject(props) {
                     } else {
                         alert("somethong went wrong!");
                     }
+
+                    setShowProgress(false);
+
                 }).catch(error => {
-                    console.log('error: ', error, 'occurred in on processing "Generate Summary"')
+                    console.log('error: ', error, 'occurred in on processing "Generate Summary"');
+                    setShowProgress(false);
                 });
 
         } else {
@@ -296,12 +340,14 @@ export default function NewProject(props) {
 
         }
 
-    };
+    }
 
     const handleEvaluateSummary = () => {
 
         if (document && summary) {
 
+            setShowProgress(true);
+            resetOutput(false);
 
             POST(COHERENCE_URL, 'coherence', {
                 text: document
@@ -358,33 +404,42 @@ export default function NewProject(props) {
             }).then(response => (!response.ok ? undefined : response.text()))
                 .then(coherecne_score => {
                     setSummaryCoherence(parseFloat(coherecne_score).toFixed(2));
+                    setShowProgress(false);
+
                 }).catch(error => {
-                    console.log('error: ', error, 'occurred in on processing "Coherence Computation for Evaluated Summary"')
+                    console.log('error: ', error, 'occurred in on processing "Coherence Computation for Evaluated Summary"');
+                    setShowProgress(false);
                 });
 
             POST(READABILITY_URL, 'readability', {
                 text: summary
             }).then(response => (!response.ok ? undefined : response.text()))
-                .then(readability_score =>
-                    setSummaryReadability(readability_score)
+                .then(readability_score => {
+                    setSummaryReadability(readability_score);
+                    setShowProgress(false);
+                }
                 ).catch(error => {
-                    console.log('error: ', error, 'occurred in on processing "Readability Computation for Evaluated Summary"')
+                    console.log('error: ', error, 'occurred in on processing "Readability Computation for Evaluated Summary"');
+                    setShowProgress(false);
                 });
 
             POST(SIMILARITY_URL, 'similarity', {
                 article: document,
                 summary: summary
             }).then(response => (!response.ok ? undefined : response.text()))
-                .then(similarity_score =>
+                .then(similarity_score => {
                     setSummarySimilarity(parseFloat(similarity_score))
+                    setShowProgress(false);
+                }
                 ).catch(error => {
-                    console.log('error: ', error, 'occurred in on processing "Similarity Computation for Evaluated Summary"')
+                    console.log('error: ', error, 'occurred in on processing "Similarity Computation for Evaluated Summary"');
+                    setShowProgress(false);
                 });
 
         } else {
             alert("Please make sure you inserted both the document and the summary to be evaluated!");
         }
-    };
+    }
 
     return (
         <div className={classes.root}>
@@ -425,7 +480,9 @@ export default function NewProject(props) {
                             style={{ width: "98%", minHeight: "70vh", margin: "1%" }}
                             onChange={(event) => {
                                 setDocument(event.target.value);
+                                resetOutput(true);
                             }}
+                            value={document}
                         />
 
                         <div style={{
@@ -475,6 +532,15 @@ export default function NewProject(props) {
                             </Typography>
                         </div>
 
+                        {showProgress ?
+                            <div className={classes.progressBar} >
+
+                                <LinearProgress />
+                                <LinearProgress color="secondary" />
+                            </div>
+                            : null
+                        }
+
                         <textarea style={{ width: "98%", minHeight: "70vh", margin: "1%" }}
 
                             onChange={(event) => {
@@ -499,7 +565,7 @@ export default function NewProject(props) {
                 </Grid>
 
             </Grid>
-        </div>
+        </div >
     );
 }
 

@@ -9,6 +9,7 @@ import ApplicationDrawer from './Pages/ApplicationDrawer/AppDrawer';
 import NewProject from './Pages/NewProject/NewProject';
 import ProjectsList from './Pages/ProjectsList/ProjectsList';
 import LoginCard from './Pages/Login/LoginCard';
+import LinearIndeterminate from './Pages/test_progress_bar';
 
 function App() {
 
@@ -129,6 +130,26 @@ function App() {
                   affiliation="Software Developer"
                   institute="Facebook"
                 />} />
+
+            )}
+          />
+
+
+
+
+          <Route
+            path="/help/get-started/"
+            exact
+            component={() => (
+
+              <ApplicationDrawer
+
+                setToken={setToken}
+                token={token}
+                children={<LinearIndeterminate />}
+              />
+
+
 
             )}
           />
